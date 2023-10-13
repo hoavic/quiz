@@ -18,10 +18,10 @@ const form = useForm(props.quiz);
 </script>
 
 <template>
-    <AppLayout title="Quiz Create">
+    <AppLayout title="Quiz Edit">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Quiz Create
+                Quiz Edit
             </h2>
         </template>
 

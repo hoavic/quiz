@@ -1,8 +1,12 @@
 <?php
 
+use App\Http\Controllers\ContinentController;
+use App\Http\Controllers\CountryController;
 use App\Http\Controllers\DemoController;
 use App\Http\Controllers\QuizController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TakeController;
+use App\Http\Controllers\TaxonomyController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -40,4 +44,10 @@ Route::middleware([
     Route::resource('takes', TakeController::class);
 
     Route::get('/demo', [DemoController::class, 'index'])->name('demo');
+
+    Route::resource('continents', ContinentController::class);
+    Route::resource('countries', CountryController::class);
+
+    Route::resource('taxonomies', TaxonomyController::class);
+    Route::resource('settings', SettingController::class);
 });
