@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Continent;
 use App\Models\Country;
+use App\Models\Taxonomy;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -25,8 +26,13 @@ class CountryController extends Controller
      */
     public function create()
     {
+        $taxonomies = Taxonomy::whereIn('taxonomy', [
+            'diem', 'tai-chinh', 'ngon-ngu', 'thoi-tiet', 'an-toan', 'giai-tri', 'tinh-cach', 'dia-hinh', 'thanh-pho'
+        ])->get();
+/*         dd($taxonomies); */
         return Inertia::render('Country/Create', [
-            'continents' => Continent::orderBy('name', 'asc')->get()
+            'continents' => Continent::orderBy('name', 'asc')->get(),
+            'taxonomies' => $taxonomies,
         ]);
     }
 
@@ -66,7 +72,8 @@ class CountryController extends Controller
     {
         return Inertia::render('Country/Edit', [
             'country' => $country,
-            'continents' => Continent::orderBy('name', 'asc')->get()
+            'continents' => Continent::orderBy('name', 'asc')->get(),
+
         ]);
     }
 

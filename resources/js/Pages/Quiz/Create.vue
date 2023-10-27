@@ -86,6 +86,16 @@ const autoSlug = () => {
                     </div>
                 </div>
 
+                <div class="">
+                    <h3 class="font-bold">Selected: {{ form.type }}</h3>
+
+                    <div class="p-4 bg-white border border-gray-300 rounded-lg">
+
+
+                    </div>
+
+                </div>
+
                 <div class="grid md:grid-cols-2 md:gap-4">
                     <div class="my-6">
                         <InputLabel for="start_at" value="Start At" />

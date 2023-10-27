@@ -29,9 +29,19 @@ class QuizController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        return Inertia::render('Quiz/Create', [
+        switch($request->query('type')) {
+            case 'basic':
+                $path = 'Type/Basic';
+                break;
+
+            default:
+                $path = 'Choose';
+                break;
+        }
+
+        return Inertia::render('Quiz/'.$path, [
 
         ]);
     }
@@ -41,6 +51,8 @@ class QuizController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+
+
         $validated = $request->validate([
             'title' => 'required|string',
             'slug' => 'required|string',
@@ -51,9 +63,21 @@ class QuizController extends Controller
             'start_at' => 'nullable|date',
             'end_at' => 'nullable|date',
             'content' => 'nullable|string',
+            'questions' => 'array',
         ]);
 
-        $request->user()->quizzes()->create($validated);
+/*         dd($request); */
+
+        $quiz = $request->user()->quizzes()->create($validated);
+
+        $questions = $validated['questions'];
+
+        foreach($questions as $question) {
+
+            $newQuestion = $quiz->questions->create($question);
+
+            $answers = $newQuestion->createMany($question['answers']);
+        }
 
         return redirect(route('quizzes.index'));
 

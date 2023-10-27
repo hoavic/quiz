@@ -21,10 +21,6 @@ return new class extends Migration
             $table->integer('count')->default(0);
             $table->nestedSet();
         });
-
-        Schema::table('taxonomies', function (Blueprint $table) {
-            $table->dropNestedSet();
-        });
     }
 
     /**

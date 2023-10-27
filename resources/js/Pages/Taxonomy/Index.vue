@@ -45,6 +45,7 @@ defineProps({
 
         <div class="my-6 flex gap-4">
             <div class="inline-block p-2 bg-gray-200 rounded-lg" v-for="term in list_terms">{{ term.taxonomy }}</div>
+            <div class=""><a :href="route('terms.index')" class="inline-block py-2 px-3 text-indigo-800">Manage Terms</a></div>
         </div>
 
         <table class="w-full text-right">

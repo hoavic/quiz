@@ -13,8 +13,10 @@ class Taxonomy extends Model
     protected $fillable = [
         'name',
         'slug',
-        'continent_id',
-        'description'
+        'description',
+        'taxonomy',
+        'order',
+        'count'
     ];
 
     public $timestamps = false;

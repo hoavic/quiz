@@ -7,14 +7,33 @@ import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import slugify from 'slugify';
 
+import { ref } from 'vue';
+
 const props = defineProps({
     sessions: Array,
     continents: Object,
+    taxonomies: Array,
 });
+
+
+const groupDataByTaxonomy = (data) => {
+    return data.reduce((acc, cur) => {
+        const taxonomy = cur.taxonomy;
+        if (!acc[taxonomy]) {
+            acc[taxonomy] = [];
+        }
+        acc[taxonomy].push(cur);
+        return acc;
+    }, {});
+};
+
+const taxGroup = groupDataByTaxonomy(props.taxonomies);
+console.log(taxGroup);
+
 const form = useForm({
     name: '',
     slug: '',
-    continent_id: '',
+    continent_id: 1,
     description: '',
 });
 
@@ -101,6 +120,19 @@ const autoSlug = () => {
                 </div>
 
                 <PrimaryButton class="mt-4">Create</PrimaryButton>
+
+                <template v-for="(group, taxonomy) in taxGroup" :key="taxonomy">
+                    <div class="my-4">
+                        <h3>{{ taxonomy }}</h3>
+                        <div class="grid grid-cols-4 gap-2">
+                            <div v-for="(item, indexItem) in group" class="flex gap-2 items-center">
+                                <input name="" type="checkbox" :value="item.id" :checked="indexItem === 0" class="rounded"/>
+                                <label for>{{ item.name }}</label>
+                            </div>
+                        </div>
+
+                    </div>
+                </template>
             </form>
         </div>
     </AppLayout>

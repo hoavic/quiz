@@ -66,8 +66,8 @@ const type = ref('list');
                 </div>
 
                 <div class="my-6">
-                    <CreateString v-if="type === 'string'" />
-                    <CreateList v-if="type === 'list'" />
+                    <CreateString v-model="form.value" v-if="type === 'string'" />
+                    <CreateList v-model="form.value" v-if="type === 'list'" />
                 </div>
 
 

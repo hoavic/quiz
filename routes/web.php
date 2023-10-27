@@ -7,6 +7,7 @@ use App\Http\Controllers\QuizController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TakeController;
 use App\Http\Controllers\TaxonomyController;
+use App\Http\Controllers\TermSettingController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -50,4 +51,6 @@ Route::middleware([
 
     Route::resource('taxonomies', TaxonomyController::class);
     Route::resource('settings', SettingController::class);
+
+    Route::resource('terms', TermSettingController::class);
 });

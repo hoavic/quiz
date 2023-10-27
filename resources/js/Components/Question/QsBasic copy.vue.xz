@@ -1,0 +1,45 @@
+<script setup>
+
+import AnsText from '../Answer/TextNumber/AnsText.vue';
+
+defineProps({
+    questionValue: {
+        type: String,
+        default: '',
+        required: true
+    },
+    answers: {
+        type: Array,
+        default: [
+            {
+                answerValue: 'default',
+            }
+        ],
+        required: true
+    }
+});
+
+</script>
+
+
+<template>
+    <div class="my-4 p-4 bg-gray-200 rounded-lg">
+        <div class="mb-4">
+            <input
+                type="text"
+                placeholder="Enter question..."
+                :value="questionValue"
+                @input="$emit('update:questionValue', $event.target.value)"
+                class="w-full text-blue-700 border border-gray-300 rounded-lg"
+            >
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-4">
+            <template v-for="answer in answers">
+                <AnsText :answerValue="answer.answerValue"/>
+            </template>
+        </div>
+    </div>
+
+
+</template>
