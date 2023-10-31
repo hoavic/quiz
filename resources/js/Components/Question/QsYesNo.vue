@@ -15,7 +15,11 @@ const props = defineProps({
     },
     level: Number,
     score: Number,
-    content: {
+    name: {
+        type: String,
+        default: '',
+    },
+    description: {
         type: String,
         default: '',
     },
@@ -24,13 +28,15 @@ const props = defineProps({
         default: [
             {
                 active: true,
-                correct: false,
-                content: true,
+                correct: true,
+                name: true,
+                description: ''
             },
             {
                 active: true,
                 correct: false,
-                content: false,
+                name: false,
+                description: ''
             }
         ]
     },
@@ -38,14 +44,13 @@ const props = defineProps({
 
 const showAnswers = ref(true);
 
-defineEmits(['update:type', 'update:active', 'update:level', 'update:score', 'update:content', 'update:answers']);
+defineEmits(['update:type', 'update:active', 'update:level', 'update:score', 'update:name', 'update:description', 'update:answers']);
 
 onMounted(() => {
 
-  if(props.answers.length === 0) {
-    addAnswer();
-    console.log(`the component is now mounted.`);
-  }
+    if(props.answers.length === 0) {
+        addAnswer();
+    }
 
 });
 
@@ -53,13 +58,15 @@ const addAnswer = () => {
     props.answers.push(
         {
             active: true,
-            correct: false,
-            content: true
+            correct: true,
+            name: true,
+            description: ''
         },
         {
             active: true,
             correct: false,
-            content: false
+            name: false,
+            description: ''
         },
     );
 }
@@ -71,7 +78,7 @@ const setCorrect = (order) => {
                 props.answers[index].correct = false;
             }
         });
-        console.log(props.answers);
+        /* console.log(props.answers); */
     }
 }
 
@@ -90,8 +97,8 @@ const setCorrect = (order) => {
             <input
                 type="text"
                 placeholder="Enter question..."
-                :value="content"
-                @input="$emit('update:content', $event.target.value)"
+                :value="name"
+                @input="$emit('update:name', $event.target.value)"
                 class="w-full font-bold text-blue-700 border border-gray-300 rounded-lg"
             >
         </div>
@@ -103,7 +110,7 @@ const setCorrect = (order) => {
                         :order="indexA"
                         v-model:active="props.answers[indexA].active"
                         v-model:correct="props.answers[indexA].correct"
-                        v-model:content="props.answers[indexA].content"
+                        v-model:name="props.answers[indexA].name"
                         @correctUpdated="setCorrect"
                         />
                 </div>

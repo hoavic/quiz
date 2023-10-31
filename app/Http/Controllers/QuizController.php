@@ -52,10 +52,9 @@ class QuizController extends Controller
     public function store(Request $request): RedirectResponse
     {
 
-
         $validated = $request->validate([
             'title' => 'required|string',
-            'slug' => 'required|string',
+            'slug' => 'required|string|unique:quizzes,slug',
             'summary' => 'nullable|string',
             'type' => 'nullable|integer',
             'published' => 'nullable|integer',
@@ -70,13 +69,22 @@ class QuizController extends Controller
 
         $quiz = $request->user()->quizzes()->create($validated);
 
+
         $questions = $validated['questions'];
 
         foreach($questions as $question) {
 
-            $newQuestion = $quiz->questions->create($question);
+            $question['quiz_id'] = $quiz->id;
 
-            $answers = $newQuestion->createMany($question['answers']);
+            $newQuestion = $quiz->questions()->create($question);
+
+/*             $answers = $newQuestion->answers()->createMany($question['answers']); */
+
+            foreach($question['answers'] as $answer) {
+                $answer['quiz_id'] = $quiz->id;
+                $answer['question_id'] = $newQuestion->id;
+                $newQuestion->answers()->create($answer);
+            }
         }
 
         return redirect(route('quizzes.index'));
@@ -88,7 +96,9 @@ class QuizController extends Controller
      */
     public function show(Quiz $quiz)
     {
-        //
+        return Inertia::render('Quiz/Show', [
+            'quiz' => $quiz->load('questions.answers'),
+        ]);
     }
 
     /**

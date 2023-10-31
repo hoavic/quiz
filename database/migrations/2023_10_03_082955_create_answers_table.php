@@ -19,7 +19,8 @@ return new class extends Migration
             $table->foreignIdFor(Question::class);
             $table->tinyInteger('active')->default(0);
             $table->tinyInteger('correct')->default(0);
-            $table->text('content')->nullable();
+            $table->text('name')->nullable();
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }

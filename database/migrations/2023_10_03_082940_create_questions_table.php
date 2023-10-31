@@ -19,7 +19,8 @@ return new class extends Migration
             $table->tinyInteger('active')->default(0);
             $table->smallInteger('level')->default(0);
             $table->smallInteger('score')->default(0);
-            $table->text('content')->nullable();
+            $table->text('name')->nullable();
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }

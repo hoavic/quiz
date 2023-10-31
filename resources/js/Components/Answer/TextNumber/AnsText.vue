@@ -10,13 +10,17 @@ defineProps({
         type: Boolean,
         default: false
     },
-    content: {
+    name: {
         type: String,
-        default: ''
-    }
+        default: '',
+    },
+    description: {
+        type: String,
+        default: '',
+    },
 });
 
-defineEmits(['update:active', 'update:correct', 'update:content', 'update:correct', 'correctUpdated']);
+defineEmits(['update:active', 'update:correct', 'update:name', 'update:description', 'update:correct', 'correctUpdated']);
 
 </script>
 
@@ -25,10 +29,11 @@ defineEmits(['update:active', 'update:correct', 'update:content', 'update:correc
     <div class="w-full">
         <input
             type="text"
-            :value="content"
+            :value="name"
             placeholder="type answer..."
-            @input="$emit('update:content', $event.target.value)"
+            @input="$emit('update:name', $event.target.value)"
             class="w-full text-gray-600 border border-gray-300 rounded-lg"
+            :class="{'bg-green-100': correct}"
         >
 
         <div class="my-2 flex gap-4">

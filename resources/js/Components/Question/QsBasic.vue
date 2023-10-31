@@ -1,6 +1,6 @@
 <script setup>
 
-import { ref, watch } from 'vue';
+import { ref, onMounted } from 'vue';
 import AnsText from '../Answer/TextNumber/AnsText.vue';
 
 const props = defineProps({
@@ -21,31 +21,35 @@ const props = defineProps({
         type: Number,
         default: 0
     },
-    content: {
+    name: {
         type: String,
         default: '',
     },
-    answers: {
-        type: Array,
-        default: [
-            {
-                active: true,
-                correct: false,
-                content: ''
-            }
-        ]
+    description: {
+        type: String,
+        default: '',
     },
+    answers: [],
 });
 
 const showAnswers = ref(true);
 
-defineEmits(['update:type', 'update:active', 'update:level', 'update:score', 'update:content', 'update:answers']);
+defineEmits(['update:type', 'update:active', 'update:level', 'update:score', 'update:name', 'update:description', 'update:answers']);
 
-const addAnswer = () => {
+onMounted(() => {
+
+    if(props.answers.length === 0) {
+        addAnswer(true); addAnswer(); addAnswer(); addAnswer();
+    }
+
+});
+
+const addAnswer = (isCorrect = false) => {
     props.answers.push({
         active: true,
-        correct: false,
-        content: ''
+        correct: isCorrect,
+        name: '',
+        description: '',
     });
 }
 
@@ -92,8 +96,8 @@ const setCorrect = (order) => {
             <input
                 type="text"
                 placeholder="Enter question..."
-                :value="content"
-                @input="$emit('update:content', $event.target.value)"
+                :value="name"
+                @input="$emit('update:name', $event.target.value)"
                 class="w-full font-bold text-blue-700 border border-gray-300 rounded-lg"
             >
             <button type="button" @click.prevent="addAnswer" class="py-2 px-4 bg-gray-700 text-white rounded-full">+</button>
@@ -106,7 +110,8 @@ const setCorrect = (order) => {
                         :order="indexA"
                         v-model:active="props.answers[indexA].active"
                         v-model:correct="props.answers[indexA].correct"
-                        v-model:content="props.answers[indexA].content"
+                        v-model:name="props.answers[indexA].name"
+                        v-model:description="props.answers[indexA].description"
                         @correctUpdated="setCorrect"
                         />
                     <button type="button" @click.prevent="removeAnswer(indexA)" class="py-4 pl-2 pr-0 text-gray-500 rounded-full">

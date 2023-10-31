@@ -10,13 +10,17 @@ defineProps({
         type: Boolean,
         default: false
     },
-    content: {
+    name: {
         type: Boolean,
-        default: true
-    }
+        default: true,
+    },
+    description: {
+        type: String,
+        default: '',
+    },
 });
 
-defineEmits(['update:active', 'update:correct', 'update:content', 'update:correct', 'correctUpdated']);
+defineEmits(['update:active', 'update:correct', 'update:name', 'update:description', 'update:correct', 'correctUpdated']);
 
 </script>
 

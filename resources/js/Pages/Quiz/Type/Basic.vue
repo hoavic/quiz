@@ -21,25 +21,12 @@ const tab = ref('quiz');
 const showAddQuestionModal = ref(false);
 const types = {
     QsBasic: {
-        comName: QsBasic,
-        comAnswers: [{content: ''}]
+        comName: QsBasic
     },
     QsYesNo: {
-        comName: QsYesNo,
-        comAnswers: []
+        comName: QsYesNo
     },
 };
-
-const questions = ref([
-    {
-        type: 'QsBasic',
-        active: true,
-        level: 0,
-        score: 0,
-        content: 'question default',
-        answers: []
-    }
-]);
 
 const form = useForm({
     title: '',
@@ -57,12 +44,9 @@ const form = useForm({
             active: true,
             level: 0,
             score: 0,
-            content: '',
-            answers: [{
-                active: true,
-                correct: false,
-                content: ''
-            }]
+            name: '',
+            description: '',
+            answers: []
         }
     ]
 });
@@ -96,11 +80,12 @@ const addQuestion = (mtype) => {
         active: true,
         level: 0,
         score: 0,
-        content: '',
-        answers: types[mtype].comAnswers
+        name: '',
+        description: '',
+        answers: []
     });
     showAddQuestionModal.value = false;
-    console.log(types[mtype]);
+/*     console.log(types[mtype]); */
 }
 
 const removeQuestion = (index) => {
@@ -113,6 +98,13 @@ const removeQuestion = (index) => {
     <AppLayout title="Quiz Create">
 
         <div>
+
+            <div v-if="form.hasErrors" class="mb-4 p-4 border border-red-800 text-red-800 bg-red-100 rounded-lg">
+                <ul>
+                    <li v-for="err in form.errors" class="">{{ err }}</li>
+                </ul>
+            </div>
+
             <form @submit.prevent="form.post(route('quizzes.store'), { onSuccess: () => form.reset() })">
                 <div class="mb-4">
                     <input
@@ -204,7 +196,8 @@ const removeQuestion = (index) => {
                             v-model:active="form.questions[index].active"
                             v-model:level="form.questions[index].level"
                             v-model:score="form.questions[index].score"
-                            v-model:content="form.questions[index].content"
+                            v-model:name="form.questions[index].name"
+                            v-model:description="form.questions[index].description"
                             v-model:answers="form.questions[index].answers"
                             />
                         <button type="button" @click.prevent="removeQuestion(index)" class="absolute top-0 right-4 py-4 pl-2 pr-0 text-red-800 rounded-full">
