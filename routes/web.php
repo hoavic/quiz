@@ -40,6 +40,21 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
+});
+
+
+Route::group([
+    'prefix' => 'admin',
+    'middleware' => [
+        'auth:sanctum',
+        config('jetstream.auth_session'),
+        'verified',
+    ]
+], function () {
+
+    Route::get('/', function () {
+        return redirect(route('dashboard'));
+    });
 
     Route::resource('quizzes', QuizController::class);
     Route::resource('takes', TakeController::class);
@@ -53,4 +68,5 @@ Route::middleware([
     Route::resource('settings', SettingController::class);
 
     Route::resource('terms', TermSettingController::class);
+
 });

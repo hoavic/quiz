@@ -13,7 +13,6 @@ import QsBasic from '@/Components/Question/QsBasic.vue';
 import QsYesNo from '@/Components/Question/QsYesNo.vue';
 
 const props = defineProps({
-    sessions: Array,
     quiz: Object,
 });
 
@@ -28,28 +27,46 @@ const types = {
     },
 };
 
-const form = useForm({
-    title: '',
-    slug: '',
-    summary: '',
-    type: '0',
-    published: '0',
-    published_at: null,
-    start_at: '',
-    end_at: '',
-    content: '',
-    questions: [
-        {
-            type: 'QsBasic',
-            active: true,
-            level: 0,
-            score: 0,
-            name: '',
-            description: '',
-            answers: []
-        }
-    ]
-});
+let data;
+
+if(props.quiz) {
+    data = props.quiz;
+} else {
+    data  = {
+        title: '',
+        slug: '',
+        summary: '',
+        type: 'basic',
+        published: '0',
+        published_at: null,
+        start_at: '',
+        end_at: '',
+        content: '',
+        questions: [
+            {
+                type: 'QsBasic',
+                active: true,
+                level: 0,
+                score: 0,
+                name: '',
+                description: '',
+                answers: []
+            }
+        ]
+    };
+}
+
+const form = useForm(data);
+
+console.log(form);
+
+const handleForm = () => {
+    if(props.quiz) {
+        form.put(route('quizzes.update', form), { onSuccess: () => form.reset() });
+    } else {
+        form.post(route('quizzes.store'), { onSuccess: () => form.reset() });
+    }
+}
 
 const autoSlug = () => {
     if(form.title != '') {
@@ -58,21 +75,6 @@ const autoSlug = () => {
         form.slug = '';
     }
 };
-
-/* const addQuestion = () => {
-    form.questions.push({
-        type: 'basic',
-        active: true,
-        level: 0,
-        score: 0,
-        content: '',
-        answers: [{
-            active: true,
-            correct: false,
-            content: ''
-        }]
-    });
-} */
 
 const addQuestion = (mtype) => {
     form.questions.push({
@@ -85,7 +87,6 @@ const addQuestion = (mtype) => {
         answers: []
     });
     showAddQuestionModal.value = false;
-/*     console.log(types[mtype]); */
 }
 
 const removeQuestion = (index) => {
@@ -105,7 +106,7 @@ const removeQuestion = (index) => {
                 </ul>
             </div>
 
-            <form @submit.prevent="form.post(route('quizzes.store'), { onSuccess: () => form.reset() })">
+            <form @submit.prevent="handleForm">
                 <div class="mb-4">
                     <input
                         id="title"
@@ -146,8 +147,8 @@ const removeQuestion = (index) => {
                         <div class="my-6">
                             <InputLabel for="type" value="Type" />
                             <select v-model="form.type" name="type" class="w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-                                <option value="0">Default</option>
-                                <option value="1">Custom</option>
+                                <option value="basic">Basic</option>
+                                <option value="custom">Custom</option>
                             </select>
                             <InputError class="mt-2" :message="form.errors.type" />
                         </div>

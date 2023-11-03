@@ -23,6 +23,16 @@ class Quiz extends Model
         'content',
     ];
 
+    protected static function boot() {
+        parent::boot();
+
+        static::deleting(function($quiz) {
+            foreach($quiz->questions as $question){
+                $question->delete();
+            }
+        });
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

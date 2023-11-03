@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('answers', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->foreignIdFor(Quiz::class);
-            $table->foreignIdFor(Question::class);
+            $table->foreignIdFor(Quiz::class)->on('quizzes')->onDelete('cascade');;
+            $table->foreignIdFor(Question::class)->on('questions')->onDelete('cascade');;
             $table->tinyInteger('active')->default(0);
             $table->tinyInteger('correct')->default(0);
             $table->text('name')->nullable();

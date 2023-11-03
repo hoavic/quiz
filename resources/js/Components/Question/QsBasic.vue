@@ -29,7 +29,10 @@ const props = defineProps({
         type: String,
         default: '',
     },
-    answers: [],
+    answers: {
+        type: Array,
+        default: []
+    },
 });
 
 const showAnswers = ref(true);
@@ -100,7 +103,7 @@ const setCorrect = (order) => {
                 @input="$emit('update:name', $event.target.value)"
                 class="w-full font-bold text-blue-700 border border-gray-300 rounded-lg"
             >
-            <button type="button" @click.prevent="addAnswer" class="py-2 px-4 bg-gray-700 text-white rounded-full">+</button>
+            <button type="button" @click.prevent="addAnswer()" class="py-2 px-4 bg-gray-700 text-white rounded-full">+</button>
         </div>
 
         <div v-if="showAnswers" class="grid md:grid-cols-2 gap-4 rounded-lg">

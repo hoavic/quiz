@@ -31,4 +31,10 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'google_recaptcha' => [
+        'url' => 'https://www.google.com/recaptcha/api/siteverify',
+        'site_key' => '6LeOHPAoAAAAAHxOo9OWasU1KmT3kTarIRj405S5',
+        'secret_key' => '6LeOHPAoAAAAAEvabS2NBZN5A5qW8MTgp-FDyX8H',
+    ]
+
 ];

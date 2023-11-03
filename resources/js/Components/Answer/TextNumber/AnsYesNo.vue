@@ -28,8 +28,8 @@ defineEmits(['update:active', 'update:correct', 'update:name', 'update:descripti
 
     <div class="w-full">
         <label class="flex items-center gap-2 text-sm text-gray-500">
-            <span v-if="content">Có</span>
-            <span v-if="!content">Không</span>
+            <span v-if="name">Có</span>
+            <span v-if="!name">Không</span>
         </label>
 
         <div class="my-2 flex gap-4">

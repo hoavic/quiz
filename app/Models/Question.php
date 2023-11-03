@@ -21,6 +21,16 @@ class Question extends Model
         'description'
     ];
 
+    protected static function boot() {
+        parent::boot();
+
+        static::deleting(function($question) {
+            foreach($question->answers as $answer){
+                $answer->delete();
+            }
+        });
+    }
+
     public function quiz(): BelongsTo
     {
         return $this->belongsTo(Quiz::class);
@@ -29,5 +39,10 @@ class Question extends Model
     public function answers(): HasMany
     {
         return $this->hasMany(Answer::class);
+    }
+
+    public function getActiveAttribute($value) {
+        if ($value === 1) {return true;}
+        return false;
     }
 }

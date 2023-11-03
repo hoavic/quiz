@@ -35,6 +35,7 @@ class HandleInertiaRequests extends Middleware
             'ziggy' => fn () => [
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
+                'recaptcha_site_key' => config('services.google_recaptcha.site_key'),
             ],
         ];
     }

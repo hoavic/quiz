@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('meta_description')->nullable();
             $table->string('slug');
             $table->tinyText('summary')->nullable();
-            $table->smallInteger('type')->default(0);
+            $table->tinyText('type');
             $table->smallInteger('score')->default(0);
             $table->tinyInteger('published')->default(0);
             $table->timestamp('published_at')->nullable();

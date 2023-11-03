@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Question;
 use App\Models\Quiz;
+use App\Models\Take;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -56,7 +58,7 @@ class QuizController extends Controller
             'title' => 'required|string',
             'slug' => 'required|string|unique:quizzes,slug',
             'summary' => 'nullable|string',
-            'type' => 'nullable|integer',
+            'type' => 'required|string',
             'published' => 'nullable|integer',
             'published_at' => 'nullable|date',
             'start_at' => 'nullable|date',
@@ -65,10 +67,7 @@ class QuizController extends Controller
             'questions' => 'array',
         ]);
 
-/*         dd($request); */
-
         $quiz = $request->user()->quizzes()->create($validated);
-
 
         $questions = $validated['questions'];
 
@@ -77,8 +76,6 @@ class QuizController extends Controller
             $question['quiz_id'] = $quiz->id;
 
             $newQuestion = $quiz->questions()->create($question);
-
-/*             $answers = $newQuestion->answers()->createMany($question['answers']); */
 
             foreach($question['answers'] as $answer) {
                 $answer['quiz_id'] = $quiz->id;
@@ -104,10 +101,20 @@ class QuizController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Quiz $quiz)
+    public function edit(Request $request, Quiz $quiz)
     {
-        return Inertia::render('Quiz/Edit', [
-            'quiz' => $quiz
+        switch($quiz->type) {
+            case 'basic':
+                $path = 'Type/Basic';
+                break;
+
+            default:
+                $path = 'Choose';
+                break;
+        }
+
+        return Inertia::render('Quiz/'.$path, [
+            'quiz' => $quiz->load('questions.answers')
         ]);
     }
 
@@ -120,16 +127,66 @@ class QuizController extends Controller
 
         $validated = $request->validate([
             'title' => 'required|string',
+            'slug' => 'required|string|unique:quizzes,slug,'.$quiz->id,
             'summary' => 'nullable|string',
-            'type' => 'nullable|integer',
+            'type' => 'required|string',
             'published' => 'nullable|integer',
             'published_at' => 'nullable|date',
             'start_at' => 'nullable|date',
             'end_at' => 'nullable|date',
             'content' => 'nullable|string',
+            'questions' => 'array',
         ]);
 
         $quiz->update($validated);
+
+        $questions = $validated['questions'];
+
+/*         $quiz
+            ->questions()
+            ->whereNotIn('id', collect($questions)->pluck('id'))
+            ->delete(); */
+
+        $old_question_ids = $quiz->questions->pluck('id');
+        $new_question_ids = collect($questions)->pluck('id');
+/*         dd($new_question_ids->toArray()); */
+        foreach($old_question_ids as $old_question_id) {
+            if(!in_array($old_question_id, $new_question_ids->toArray())) {
+                $deleted_question = Question::find($old_question_id)->delete();
+            }
+        }
+
+        foreach($questions as $question) {
+
+            $newQuestion = $quiz->questions()->updateOrCreate([
+                'id' => $question['id'] ?? null,
+            ], $question);
+
+/*             $newQuestion
+                ->answers()
+                ->whereNotIn('id', collect($question['answers'])->pluck('id'))
+                ->delete(); */
+
+            $quiz
+                ->questions()
+                ->where('id', $newQuestion->id)
+                ->first()
+                ->answers()
+                ->whereNotIn('id', collect($question['answers'])->pluck('id'))
+                ->delete();
+
+            foreach($question['answers'] as $answer) {
+                if(empty($answer['quiz_id'])) {$answer['quiz_id'] = $quiz->id;}
+                    $quiz
+                        ->questions()
+                        ->where('id', $newQuestion->id)
+                        ->first()
+                        ->answers()->updateOrCreate([
+                        'id' => $answer['id'] ?? null,
+                    ], $answer);
+            }
+
+        }
 
         return redirect(route('quizzes.index'));
     }

@@ -29,4 +29,13 @@ class Answer extends Model
         return $this->belongsTo(Question::class);
     }
 
+    public function getActiveAttribute($value) {
+        if ($value === 1) {return true;}
+        return false;
+    }
+
+    public function getCorrectAttribute($value) {
+        if ($value === 1) {return true;}
+        return false;
+    }
 }
